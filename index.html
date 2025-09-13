@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>各種給付申請フォーム</title>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <h3>申請書作成フォーム（●●給付金）</h3>
+    <form id="applicationForm" action="index_confirm.html" method="GET">
+        <table class="form_table">
+
+            <tr>
+                <th>
+                    <label for="office_number">事業所番号</label>
+                </th>
+                <td>
+                    <input type="text" id="office_number" name="office_number" required>
+                    <div id="office_number_error" class="error-message"></div>
+                </td>
+            </tr>
+            
+            <tr>
+                <th>
+                    <label for="office_name">事業所名</label>
+                </th>
+                <td>
+                    <input type="text" id="office_name" name="office_name" required>
+                    <div id="office_name_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="hiho_number">被保険者番号</label>
+                </th>
+                <td>
+                    <input type="text" id="hiho_number" name="hiho_number" required>
+                    <div id="hiho_number_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="name">氏名</label>
+                </th>
+                <td>
+                    <input type="text" id="name" name="name" required >
+                    <div id="name_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="kana_name">カナ氏名</label>
+                </th>
+                <td>
+                    <input type="text" id="kana_name" name="kana_name" required>
+                    <div id="kana_name_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="birth">生年月日</label>
+                </th>
+                <td>
+                    <input type="date" id="birth" name="birth" required>
+                    <div id="birth_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="sex">性別</label>
+                </th>
+                <td>
+                    <select id="sex" name="sex" required>
+                        <option value="">選択してください</option>
+                        <option value="1">男性</option>
+                        <option value="2">女性</option>
+                        <option value="3">その他</option>
+                    </select>
+                    <div id="sex_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="post_number">郵便番号</label>
+                </th>
+                <td>
+                    <input type="text" id="post_number" name="post_number">
+                    <div id="post_number_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="address">住所</label>
+                </th>
+                <td>
+                    <input type="text" id="address" name="address">
+                    <div id="address_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="kyufu_select">給付金の種類</label>
+                </th>
+                <td>
+                    <select id="kyufu_select" name="kyufu_select">
+                        <option value="">選択してください</option>
+                        <option value="1">給付金A</option>
+                        <option value="2">給付金B</option>
+                        <option value="2">給付金C</option>
+                    </select>
+                    <div id="kyufu_select_error" class="error-message"></div>
+                </td>
+            </tr>
+
+            <tr class="form-group-multiple-inputs">
+                <th>
+                    <label for="payment_info">支払先情報</label>
+                </th>
+                <td>
+                    <div class="input-pair-vertical">
+                        <label for="payment_name">金融機関名称</label>
+                        <input type="text" id="payment_name" name="payment_name">
+                        <div id="payment_name_error" class="error-message"></div>
+                    </div>
+                    <div class="input-pair-vertical">
+                        <label for="payment_number">口座番号</label>
+                        <input type="text" id="payment_number" name="payment_number">
+                        <div id="payment_number_error" class="error-message"></div>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+
+        <br>
+
+        <button type="submit">入力確認画面へ進む</button>
+    </form>
+
+
+    <script>
+    //「入力確認画面へ進む」ボタンを押した際のスクリプト
+
+        document.getElementById('applicationForm').addEventListener('submit', function(event) {
+            let isValid = true; // バリデーションの状態を保持
+
+            // バリデーション処理 (既存のコード)
+            const officeNumberInput = document.getElementById('office_number');
+            const officeNumberError = document.getElementById('office_number_error');
+            if (!/^\d{10}$/.test(officeNumberInput.value)) {
+                officeNumberError.textContent = '事業所番号は10桁の数字で入力してください。';
+                isValid = false;
+            } else {
+                officeNumberError.textContent = '';
+            }
+
+            const hihoNumberInput = document.getElementById('hiho_number');
+            const hihoNumberError = document.getElementById('hiho_number_error');
+            if (!/^\d{10}$/.test(hihoNumberInput.value)) {
+                hihoNumberError.textContent = '被保険者番号は10桁の数字で入力してください。';
+                isValid = false;
+            } else {
+                hihoNumberError.textContent = '';
+            }
+
+            const nameInput = document.getElementById('name');
+            const nameError = document.getElementById('name_error');
+            if (nameInput.value.trim() === '') {
+                nameError.textContent = '氏名を入力してください。';
+                isValid = false;
+            } else {
+                nameError.textContent = '';
+            }
+
+            const kanaNameInput = document.getElementById('kana_name');
+            const kanaNameError = document.getElementById('kana_name_error');
+            if (kanaNameInput.value.trim() === '') {
+                kanaNameError.textContent = 'カナ氏名を入力してください。';
+                isValid = false;
+            } else {
+                kanaNameError.textContent = '';
+            }
+
+            const birthInput = document.getElementById('birth');
+            const birthError = document.getElementById('birth_error');
+            if (birthInput.value === '') {
+                birthError.textContent = '生年月日を選択してください。';
+                isValid = false;
+            } else {
+                birthError.textContent = '';
+            }
+
+            const sexSelect = document.getElementById('sex');
+            const sexError = document.getElementById('sex_error');
+            if (sexSelect.value === '') {
+                sexError.textContent = '性別を選択してください。';
+                isValid = false;
+            } else {
+                sexError.textContent = '';
+            }
+
+         
+            if (!isValid) {
+                event.preventDefault(); 
+            }
+          
+        });
+    </script> 
+
+</body>
+</html>
