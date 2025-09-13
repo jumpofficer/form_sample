@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>各種給付申請フォーム</title>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <h3>申請書確認フォーム（●●給付金）</h3>
+    <div id="confirmationArea">
+        <br>
+        <p id="confirmationMessage">以下のとおり申請します。よろしいですか？</p>
+        
+        <div id="applicationDetails">
+            <p>申請内容:</p>
+           
+            <div class="confirmation-details">
+                <table class="main-table">
+                    <tr>
+                        <th>事業所番号</th>
+                        <td>{{ form_data.office_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>事業所名</th>
+                        <td>{{ form_data.office_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>被保険者番号</th>
+                        <td>{{ form_data.hiho_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>氏名</th>
+                        <td>{{ form_data.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>カナ氏名</th>
+                        <td>{{ form_data.kana_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>生年月日</th>
+                        <td>{{ form_data.birth }}</td>
+                    </tr>
+                    <tr>
+                        <th>性別</th>
+                        <td>
+                            {% if form_data.sex == '1' %}男性
+                            {% elif form_data.sex == '2' %}女性
+                            {% elif form_data.sex == '3' %}その他
+                            {% else %}未選択
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>郵便番号</th>
+                        <td>{{ form_data.post_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>住所</th>
+                        <td>{{ form_data.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>個人番号</th>
+                        <td>{{ form_data.kyufu_select }}</td>
+                    </tr>
+                  
+                </table>
+            </div>
+        </div>
+        <div class="buttons">
+            <button id="editButton">修正する</button>
+            <button id="submitFinal">申請を確定する</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButton = document.getElementById('editButton');
+            const submitFinalButton = document.getElementById('submitFinal');
+
+            editButton.addEventListener('click', function() {
+                window.history.back();
+            });
+
+            submitFinalButton.addEventListener('click', function() {
+                // FlaskからJSON文字列として渡されたform_data_jsonを直接パースして利用
+                // これにより、Jinja2の {{ form_data.key }} で個別に値を埋め込む手間が省け、
+                // かつデータが確実にJSONとして有効な形式になります。
+                const formData = JSON.parse('{{ form_data_json | safe }}'); 
+
+                console.log("FormData sent to server:", formData); // 送信するデータを確認
+
+                fetch('/submit_application', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Content-Dispositionヘッダーからファイル名を取得
+                        const contentDisposition = response.headers.get('Content-Disposition');
+                        let filename = '申請書.pdf'; // デフォルトのファイル名
+                        if (contentDisposition && contentDisposition.includes('filename=')) {
+                            // filename="ファイル名" の形式をパース
+                            const filenameMatch = contentDisposition.match(/filename\*?=['"]?([^"';]+)['"]?/);
+                            if (filenameMatch && filenameMatch[1]) {
+                                // URLデコード（もしファイル名に日本語が含まれる場合）
+                                try {
+                                    filename = decodeURIComponent(filenameMatch[1].replace(/\"/g, ''));
+                                } catch (e) {
+                                    filename = filenameMatch[1].replace(/\"/g, '');
+                                }
+                            }
+                        }
+                        // ファイル名をresponseオブジェクトに付与して次のthenに渡す
+                        return response.blob().then(blob => ({ blob, filename }));
+                    } else {
+                        return response.text().then(text => { 
+                            throw new Error(`サーバーエラー: ${response.status} ${response.statusText}\n${text}`);
+                        });
+                    }
+                })
+
+                .then(({ blob, filename }) => { // filenameも受け取る
+                    if (blob.size === 0) {
+                        throw new Error('サーバーから空のPDFファイルが返されました。');
+                    }
+
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename; // 取得したファイル名を設定
+
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    alert('申請が完了し、PDFをダウンロードしました。');
+                })
+                .catch(error => {
+                    console.error('エラー:', error);
+                    alert('申請処理中にエラーが発生しました。\n' + error.message);
+                });
+
+            });
+        });
+    </script>
+    
+</body>
+</html>
