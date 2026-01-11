@@ -4,4 +4,4 @@
 
 フォルダ内で docker-compose up -d を実行
 
-ブラウザで http://localhost:8080 を開く
+ブラウザで http://localhost:5000 を開く
