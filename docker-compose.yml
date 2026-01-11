@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    container_name: simple_application_form
+    ports:
+      - "5000:5000"  # ここを 5000:5000 に変更
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    restart: always

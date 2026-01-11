@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>各種給付申請フォーム</title>
-    <link href="style.css" rel="stylesheet">
+    <link href="static/style.css" rel="stylesheet">
 </head>
 <body>
     <h3>申請書確認フォーム（●●給付金）</h3>
@@ -72,6 +72,22 @@
             <button id="submitFinal">申請を確定する</button>
         </div>
     </div>
+
+
+    <script>
+        // 「修正する」ボタンが押されたときのスクリプト
+        document.getElementById('editButton').addEventListener('click', function() {
+            // ブラウザの履歴を一つ戻る（＝入力内容が残った状態で前の画面に戻れる）
+            window.history.back();
+        });
+
+        // 「申請を確定する」ボタンが押されたとき（仮のアラート）
+        document.getElementById('submitFinal').addEventListener('click', function() {
+            alert('申請を受け付けました。\n（デモ動作のため、実際には送信されません）');
+            // 処理完了後、トップページに戻すなどの処理をここに書きます
+            window.location.href = '/'; 
+        });
+    </script>
 
     
 </body>

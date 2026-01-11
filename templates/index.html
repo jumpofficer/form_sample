@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>各種給付申請フォーム</title>
-    <link href="style.css" rel="stylesheet">
+    <link href="static/style.css" rel="stylesheet">
 </head>
 <body>
     <h3>申請書作成フォーム（●●給付金）</h3>
-    <form id="applicationForm" action="index_confirm.html" method="GET">
+    <form id="applicationForm" action="/index_confirm" method="GET">
         <table class="form_table">
 
             <tr>
@@ -156,8 +156,8 @@
             // バリデーション処理 (既存のコード)
             const officeNumberInput = document.getElementById('office_number');
             const officeNumberError = document.getElementById('office_number_error');
-            if (!/^\d{10}$/.test(officeNumberInput.value)) {
-                officeNumberError.textContent = '事業所番号は10桁の数字で入力してください。';
+            if (!/^\d{5}$/.test(officeNumberInput.value)) {
+                officeNumberError.textContent = '事業所番号は5桁の数字で入力してください。';
                 isValid = false;
             } else {
                 officeNumberError.textContent = '';
@@ -165,8 +165,8 @@
 
             const hihoNumberInput = document.getElementById('hiho_number');
             const hihoNumberError = document.getElementById('hiho_number_error');
-            if (!/^\d{10}$/.test(hihoNumberInput.value)) {
-                hihoNumberError.textContent = '被保険者番号は10桁の数字で入力してください。';
+            if (!/^\d{5}$/.test(hihoNumberInput.value)) {
+                hihoNumberError.textContent = '被保険者番号は5桁の数字で入力してください。';
                 isValid = false;
             } else {
                 hihoNumberError.textContent = '';

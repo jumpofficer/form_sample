@@ -1,0 +1,23 @@
+# --- Python ---
+# 実行時に自動生成される不要なファイル
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env
+
+# --- Docker ---
+# コンテナのログや一時ファイル
+.docker/
+# もし将来的にDBを使う予定なら、そのデータフォルダもここに追加します
+# data/
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+.vscode/
+
+# --- Log files ---
+*.log
